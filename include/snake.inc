@@ -6,6 +6,7 @@
 %define SYSCALL_IOCTL		16
 %define SYSCALL_NANOSLEEP	35
 %define SYSCALL_EXIT		60
+%define SYSCALL_GETRANDOM	318
 
 %define STDOUT_FILENO		1
 %define STDIN_FILENO		0
@@ -21,9 +22,20 @@
 %define	KEY_MOVE_RIGHT		"d"
 %define	KEY_MOVE_LEFT		"a"
 
-%define EMPTY_SYMBOL		" "
-%define PLAYER_SYMBOL		"@"
+%define SYMBOL_EMPTY		" "
+%define SYMBOL_FOOD			"+"
+%define SYMBOL_WALL			"#"
+%define SYMBOL_PLAYER		"@"
+
+%define MAP_ROW_SIZE		41
+%define MAP_COL_SIZE		20
+%assign MAP_SIZE			MAP_ROW_SIZE * MAP_COL_SIZE
+%assign MAP_WALKABLE_SIZE	(MAP_ROW_SIZE - 3) * (MAP_COL_SIZE - 2)
+%assign MAP_WALKABLE_FIRST	MAP_ROW_SIZE + 1
+
 %define PLAYER_MAX_LENGTH	5
 
 %define GAMEPLAY_DELAY_MS	100
 %assign GAMEPLAY_DELAY_NS	GAMEPLAY_DELAY_MS * 1000000
+
+%define NEWLINE				0x0A

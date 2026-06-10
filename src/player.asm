@@ -1,6 +1,5 @@
 %include "snake.inc"
 
-extern	map.row_size
 extern	map.fn_set
 extern	memmove
 
@@ -17,20 +16,20 @@ global	player.fn_clear_on_map
 player:
 
 section	.data
-.positions:	times PLAYER_MAX_LENGTH dq 22
+.positions:	times PLAYER_MAX_LENGTH dq MAP_WALKABLE_FIRST
 .length:	dq PLAYER_MAX_LENGTH
 .next_move:	dq player.fn_move_right
 
 section	.text
 .fn_move_up:
 	mov		rdi, qword [player.positions]
-	sub		rdi, qword [map.row_size]
+	sub		rdi, MAP_ROW_SIZE
 	call	__push_position
 	ret
 
 .fn_move_down:
 	mov		rdi, qword [player.positions]
-	add		rdi, qword [map.row_size]
+	add		rdi, MAP_ROW_SIZE
 	call	__push_position
 	ret
 
@@ -64,14 +63,14 @@ section	.text
 
 .fn_set_on_map:
 	mov		rdi, qword [player.positions]
-	mov		sil, PLAYER_SYMBOL
+	mov		sil, SYMBOL_PLAYER
 	call	map.fn_set
 	ret
 
 .fn_clear_on_map:
 	mov		rax, [player.length]
 	mov		rdi, qword [player.positions + (rax - 1) * 8]
-	mov		sil, EMPTY_SYMBOL
+	mov		sil, SYMBOL_EMPTY
 	call	map.fn_set
 	ret
 

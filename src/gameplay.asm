@@ -2,6 +2,7 @@
 
 extern	map.data
 extern	map.fn_set
+extern	map.fn_respawn_food
 
 extern	player.positions
 extern	player.length
@@ -47,8 +48,11 @@ section	.text
 	ret
 
 .fn_handle_collisions:
-	mov	rax, qword [player.positions]
-	cmp	byte [map.data + rax], EMPTY_SYMBOL
+	mov	rax, map.data
+	add	rax, qword [player.positions]
+	cmp	byte [rax], SYMBOL_FOOD
+	jz	map.fn_respawn_food
+	cmp	byte [rax], SYMBOL_EMPTY
 	jnz	gameplay.fn_stop
 	ret
 
