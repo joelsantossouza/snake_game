@@ -7,6 +7,7 @@ extern	map.fn_respawn_food
 extern	player.positions
 extern	player.length
 extern	player.next_move
+extern	player.fn_grow
 extern	player.fn_set_next_move_up
 extern	player.fn_set_next_move_down
 extern	player.fn_set_next_move_right
@@ -23,13 +24,12 @@ global	gameplay.fn_delay
 
 gameplay:
 
-section	.rodata
-.delay_timespec:
-	dq	0
-	dq	GAMEPLAY_DELAY_NS
-
 section	.data
 .is_running:	db TRUE
+
+.delay_timespec:
+	dq	0
+	dq	GAMEPLAY_DELAY_MAX_NS
 
 section	.text
 .fn_start:
@@ -38,6 +38,10 @@ section	.text
 
 .fn_stop:
 	mov	byte [gameplay.is_running], FALSE
+	ret
+
+.fn_increase_speed:
+	sub	qword [gameplay.delay_timespec + 8], GAMEPLAY_DELAY_STEP_NS
 	ret
 
 .fn_delay:
@@ -51,7 +55,7 @@ section	.text
 	mov	rax, map.data
 	add	rax, qword [player.positions]
 	cmp	byte [rax], SYMBOL_FOOD
-	jz	map.fn_respawn_food
+	jz	gameplay.fn_handle_food_eaten
 	cmp	byte [rax], SYMBOL_EMPTY
 	jnz	gameplay.fn_stop
 	ret
@@ -65,6 +69,12 @@ section	.text
 	jz	player.fn_set_next_move_right
 	cmp	dil, KEY_MOVE_LEFT
 	jz	player.fn_set_next_move_left
+	ret
+
+.fn_handle_food_eaten:
+	call	player.fn_grow
+	call	map.fn_respawn_food
+	call	gameplay.fn_increase_speed
 	ret
 
 .fn_update:

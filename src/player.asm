@@ -6,6 +6,7 @@ extern	memmove
 global	player.next_move
 global	player.positions
 global	player.length
+global	player.fn_grow
 global	player.fn_set_next_move_up
 global	player.fn_set_next_move_down
 global	player.fn_set_next_move_right
@@ -17,10 +18,20 @@ player:
 
 section	.data
 .positions:	times PLAYER_MAX_LENGTH dq MAP_WALKABLE_FIRST
-.length:	dq PLAYER_MAX_LENGTH
+.length:	dq 1
 .next_move:	dq player.fn_move_right
 
 section	.text
+.fn_grow:
+	mov	rax, qword [player.length]
+	cmp	rax, PLAYER_MAX_LENGTH
+	jae	__return
+	lea	rax, [player.positions + rax * 8]
+	mov	rbx, qword [rax - 8]
+	mov	qword [rax], rbx
+	add	qword [player.length], 1
+	ret
+
 .fn_move_up:
 	mov		rdi, qword [player.positions]
 	sub		rdi, MAP_ROW_SIZE
@@ -92,4 +103,7 @@ __push_position:
 
 	add		rsp, 8
 	pop		rbp
+	ret
+
+__return:
 	ret
