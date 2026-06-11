@@ -2,6 +2,8 @@
 
 A learning project written in x86 assembly for Linux. This repository is focused on practicing assembly programming techniques rather than delivering a polished game.
 
+https://github.com/user-attachments/assets/912eabcb-a932-455d-afeb-8f3f1c30df42
+
 ## Overview
 
 The code implements a simple Snake-like experience using only Linux syscalls for terminal I/O. The main goal is to explore low-level program structure, game state management, and assembly-language organization.
