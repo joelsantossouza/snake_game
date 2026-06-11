@@ -11,8 +11,8 @@ global	player.fn_set_next_move_up
 global	player.fn_set_next_move_down
 global	player.fn_set_next_move_right
 global	player.fn_set_next_move_left
-global	player.fn_set_on_map
-global	player.fn_clear_on_map
+global	player.fn_set_head_on_map
+global	player.fn_clear_tail_on_map
 
 player:
 
@@ -72,15 +72,24 @@ section	.text
 	mov	qword [player.next_move], player.fn_move_left
 	ret
 
-.fn_set_on_map:
+.fn_set_head_on_map:
 	mov		rdi, qword [player.positions]
 	mov		sil, SYMBOL_PLAYER
 	call	map.fn_set
 	ret
 
-.fn_clear_on_map:
+.fn_clear_tail_on_map:
 	mov		rax, [player.length]
-	mov		rdi, qword [player.positions + (rax - 1) * 8]
+	lea		rbx, [player.positions + (rax - 1) * 8]
+	mov		rdi, qword [rbx]
+
+	cmp		rax, 1
+	jz		.__clear_tail
+
+	cmp		rdi, qword [rbx - 8]
+	jz		__return
+
+.__clear_tail:
 	mov		sil, SYMBOL_EMPTY
 	call	map.fn_set
 	ret
